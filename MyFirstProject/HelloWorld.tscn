@@ -1,0 +1,58 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://sayhello.gd" type="Script" id=1]
+[ext_resource path="res://teleport.gd" type="Script" id=2]
+[ext_resource path="res://icon.png" type="Texture" id=3]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Panel" type="Panel" parent="."]
+margin_left = 180.0
+margin_top = 114.0
+margin_right = 395.0
+margin_bottom = 320.0
+script = ExtResource( 1 )
+
+[node name="Label" type="Label" parent="Panel"]
+margin_left = 50.7238
+margin_top = 40.7125
+margin_right = 90.7238
+margin_bottom = 54.7125
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+text = "I'm a label!"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Button" type="Button" parent="Panel"]
+anchor_right = 0.056
+anchor_bottom = 0.097
+margin_left = 50.7238
+margin_top = 64.0722
+margin_right = 109.684
+margin_bottom = 64.0902
+text = "Press Me"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label2" type="Label" parent="Panel"]
+margin_left = 14.4681
+margin_top = 10.6442
+margin_right = 94.4681
+margin_bottom = 24.6442
+text = "Hello World!"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Sprite" type="Sprite" parent="."]
+position = Vector2( 639, 283 )
+texture = ExtResource( 3 )
+script = ExtResource( 2 )
+
+[node name="Sprite" type="Sprite" parent="Sprite"]
+position = Vector2( 175, 97 )
+texture = ExtResource( 3 )
+
+[connection signal="button_down" from="Panel/Button" to="Panel" method="_on_Button_button_down"]
