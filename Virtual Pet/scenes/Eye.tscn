@@ -1,0 +1,79 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://assets/eye.png" type="Texture" id=1]
+[ext_resource path="res://scenes/Eye.gd" type="Script" id=2]
+[ext_resource path="res://assets/eye_squint.png" type="Texture" id=3]
+[ext_resource path="res://assets/eye_V.png" type="Texture" id=4]
+[ext_resource path="res://assets/eye_closed.png" type="Texture" id=5]
+[ext_resource path="res://assets/eye_smiling.png" type="Texture" id=6]
+[ext_resource path="res://eye_collision_shapes/open.tres" type="Shape2D" id=7]
+
+[sub_resource type="SpriteFrames" id=2]
+animations = [ {
+"frames": [ ExtResource( 1 ) ],
+"loop": true,
+"name": "open",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 5 ) ],
+"loop": true,
+"name": "closed",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 3 ) ],
+"loop": true,
+"name": "squint",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ) ],
+"loop": true,
+"name": "smiling",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 4 ) ],
+"loop": true,
+"name": ">.<",
+"speed": 5.0
+} ]
+
+[sub_resource type="Animation" id=3]
+resource_name = "blink"
+length = 0.5
+step = 0.01
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.15, 0.22, 0.25, 0.28, 0.32, 0.5 ),
+"transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1.106, 0.897 ), Vector2( 1.204, 0.305 ), Vector2( 1.281, 0.079 ), Vector2( 1.216, 0.305 ), Vector2( 1.118, 0.752 ), Vector2( 1, 1 ) ]
+}
+
+[node name="Eye" type="Area2D" groups=["eye"]]
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="EyeSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 2 )
+animation = "open"
+
+[node name="EyeCollisionShape" type="CollisionShape2D" parent="."]
+position = Vector2( 1, 0.5 )
+shape = ExtResource( 7 )
+__meta__ = {
+"_editor_description_": "TODO: Script it so that there's a method for changing eye shape."
+}
+
+[node name="vEyeCollisionPolygon" type="CollisionPolygon2D" parent="."]
+position = Vector2( 1, 0.5 )
+polygon = PoolVector2Array( -42, -123.5, 80, -1.5, -42, 122.5, -81, 84.5, 2, -0.5, -81, -84.5 )
+disabled = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/blink = SubResource( 3 )
