@@ -41,5 +41,6 @@ func _input(event):
 		var r = clamp(distance / 5, 0, maximum_displacement_length);
 		# No need to add self.center because child's position is already relative.
 		$Eyes.position = Vector2(r * cos(direction), r * sin(direction))
-		# ***k yeah it works. Take that Godot!
+		# And it works. Take that you muffin!
 		# (28 lines of buggy codes deleted)
+	
