@@ -34,8 +34,13 @@ func _process(delta):
 		if not self.in_idle_mode:
 			self.idle_mode(0.3);
 			self.in_idle_mode = true;
+			self.stop_getting_pet();
 	else:
 		self.in_idle_mode = false;
+
+	if self.getting_pet and $EyeAnimationPlayer.get_queue().size() < 2:
+		$EyeAnimationPlayer.queue("get_pet");
+		
 	last_mouse_position = new_mouse_position;
 	
 	if Input.is_action_just_released("left_click"):
@@ -54,7 +59,7 @@ func _input(event):
 		# Meanwhile move it to a point on a line between the mouse and the origin
 		# Depending on how far the mouse is from the origin
 		var mouse_pos = event.position - self.center;
-		print(mouse_pos);
+#		print(mouse_pos);
 		var distance = mouse_pos.length();
 		# First rotate the path we're going to follow
 		var direction;
@@ -116,35 +121,44 @@ func idle_mode(animation_length: float):
 	# Adjust speed of AnimationPlayer to preferred length (seconds)
 	# Originall animation duration is 1s
 	$EyeAnimationPlayer.set_speed_scale(1 / animation_length);
-	$EyeAnimationPlayer.current_animation = 'eye_return';
+	reset_eye_return_animation_position();
+	# Play the animtaion
+	$EyeAnimationPlayer.play("eye_return");
+
+
+func reset_eye_return_animation_position():
 	# Adjust initial position values to current ones
 	var animation = $EyeAnimationPlayer.get_animation('eye_return');
 	var track_position = animation.find_track('Eyes:position');
 	animation.track_set_key_value(track_position, 0, $Eyes.position);
 	animation.track_set_key_value(track_position, 1, $Eyes.position * 0.8)
 	animation.track_set_key_value(track_position, 2, $Eyes.position * 0.1);
-	# Play the animtaion
-	$EyeAnimationPlayer.play();
 
 
 func get_pet():
-	if self.getting_pet and $BodyAnimationPlayer.get_queue().size() < 5:
-		$BodyAnimationPlayer.queue('getting_pet_manual');  # TODO: randomize animation
-		# Real-time generation maybe?
+	print('getting pet:', self.getting_pet)
+	if not self.getting_pet:
+		get_tree().call_group('eye', 'close', 0.5);
+		$BlinkTimer.stop();
+	self.getting_pet = true;
 
 
-func generate_animations_getting_pet():
-	pass  # TODO, remember to move both eyes and body, see getting_pet_manual
+func stop_getting_pet():
+	$EyeAnimationPlayer.stop();
+	reset_eye_return_animation_position();
+	$EyeAnimationPlayer.play("eye_return");
+	get_tree().call_group('eye', 'open', 0.3);
+	$BlinkTimer.start();
+	self.getting_pet = false;
 
 
 func _on_Pet_mouse_entered():
-	# Check if it is being pet
-	var recent_motion_sequence = map(mouse_speed_sequence, "abs_").slice(
-		mouse_speed_sequence.size() - 120,
-		mouse_speed_sequence.size()
-	);
-	if avg(recent_motion_sequence) <= 200 and avg(recent_motion_sequence) > 10:
-		self.get_pet();
+	self.get_pet();
+
+
+func _on_Pet_mouse_exited():
+	if self.getting_pet:
+		self.stop_getting_pet();
 
 
 static func avg(l: Array):
@@ -165,3 +179,4 @@ func map(l: Array, f):
 	for item in l:
 		new_l.append(call(f, item));
 	return new_l;
+

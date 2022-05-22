@@ -5,6 +5,9 @@ export var eye_initial_height = 235;
 export var initial_eye_position: Vector2;
 var initial_scale = eye_initial_height / 235.0;
 var last_blink = OS.get_unix_time();
+var _open = true;
+var _closed = false;
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -22,6 +25,26 @@ func _process(delta):
 #			self.blink(0.3);
 #			last_blink = OS.get_unix_time();
 
-func blink(duration):
+
+func blink(duration: float):
 	$AnimationPlayer.playback_speed = 0.5 / duration;
 	$AnimationPlayer.queue('blink');
+
+
+func close(duration: float):
+	if not self._closed:
+		$AnimationPlayer.playback_speed = 1 / duration;
+		$AnimationPlayer.queue('close');
+		self._closed = true;
+		self._open = false;
+
+
+func open(duration: float):
+	if not self._open:
+		$AnimationPlayer.playback_speed = 1 / duration;
+		var animation = $AnimationPlayer.get_animation('open');
+		var track_scale = animation.find_track('.:scale');
+		animation.track_set_key_value(track_scale, 0, self.scale);
+		$AnimationPlayer.queue('open');
+		self._open = true;
+		self._closed = false;
