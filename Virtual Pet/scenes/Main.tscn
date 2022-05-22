@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://scenes/Pet.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scenes/Main.gd" type="Script" id=2]
+[ext_resource path="res://scenes/HUD.tscn" type="PackedScene" id=3]
 
 [node name="Main" type="Node2D"]
 script = ExtResource( 2 )
@@ -13,4 +14,6 @@ mouse_filter = 2
 color = Color( 0, 0, 0, 1 )
 
 [node name="PetDisplay" parent="." instance=ExtResource( 1 )]
-position = Vector2( 301, 435 )
+position = Vector2( 301, 328 )
+
+[node name="HUD" parent="." instance=ExtResource( 3 )]
