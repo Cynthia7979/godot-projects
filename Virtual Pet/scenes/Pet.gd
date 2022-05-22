@@ -1,13 +1,12 @@
 extends Area2D
 
 
+export var getting_pet = false;
 var screen_resolution;
 var screen_radius;
 var mouse_speed_sequence = [];
 var last_mouse_position : Vector2;
 var in_idle_mode = false;
-var getting_pet = false;
-const center = Vector2(300, 300);
 const maximum_displacement_length = 70;  # In pixels
 
 
@@ -15,10 +14,10 @@ const maximum_displacement_length = 70;  # In pixels
 func _ready():
 	screen_resolution = self.get_viewport().size;
 	screen_radius = sqrt(pow(screen_resolution.x, 2) + pow(screen_resolution.y, 2));
-	self.position = self.center;
 	$BlinkTimer.wait_time = rand_range(0, 3.0);
 	$BlinkTimer.start();
 	last_mouse_position = get_viewport().get_mouse_position();
+	print('Hey. Don\'t worry. I\'m here.')
 
 
 func _process(delta):
@@ -58,7 +57,7 @@ func _input(event):
 		# We want to keep the eye inside the body
 		# Meanwhile move it to a point on a line between the mouse and the origin
 		# Depending on how far the mouse is from the origin
-		var mouse_pos = event.position - self.center;
+		var mouse_pos = event.position - self.position;
 #		print(mouse_pos);
 		var distance = mouse_pos.length();
 		# First rotate the path we're going to follow
@@ -79,7 +78,6 @@ func _input(event):
 			
 		# You know what? Screw that. I'm gonna freaking do it myself.
 		var r = clamp_displacement_length(distance);
-		# No need to add self.center because child's position is already relative.
 		$Eyes.position = Vector2(r * cos(direction), r * sin(direction))
 		# And it works. Take that you muffin!
 		# (28 lines of buggy codes deleted)
@@ -136,7 +134,8 @@ func reset_eye_return_animation_position():
 
 
 func get_pet():
-	print('getting pet:', self.getting_pet)
+	$StopGettingPetTimer.stop();
+	print('getting pet:', self.getting_pet);
 	if not self.getting_pet:
 		get_tree().call_group('eye', 'close', 0.5);
 		$BlinkTimer.stop();
@@ -153,12 +152,13 @@ func stop_getting_pet():
 
 
 func _on_Pet_mouse_entered():
+	print('ENTER')
 	self.get_pet();
 
 
 func _on_Pet_mouse_exited():
 	if self.getting_pet:
-		self.stop_getting_pet();
+		$StopGettingPetTimer.start();
 
 
 static func avg(l: Array):

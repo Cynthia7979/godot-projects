@@ -219,6 +219,10 @@ loop = false
 wait_time = 4.0
 one_shot = true
 
+[node name="StopGettingPetTimer" type="Timer" parent="."]
+wait_time = 0.8
+one_shot = true
+
 [node name="EyeAnimationPlayer" type="AnimationPlayer" parent="."]
 anims/RESET = SubResource( 5 )
 anims/eye_return = SubResource( 6 )
@@ -231,3 +235,4 @@ anims/getting_pet_manual = SubResource( 7 )
 [connection signal="mouse_exited" from="." to="." method="_on_Pet_mouse_exited"]
 [connection signal="item_rect_changed" from="EyeMovementPath" to="EyeMovementPath/PathFollow2D" method="_on_EyeMovementPath_item_rect_changed"]
 [connection signal="timeout" from="BlinkTimer" to="." method="_on_BlinkTimer_timeout"]
+[connection signal="timeout" from="StopGettingPetTimer" to="." method="stop_getting_pet"]

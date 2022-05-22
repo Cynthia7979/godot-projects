@@ -33,8 +33,9 @@ func blink(duration: float):
 
 func close(duration: float):
 	if not self._closed:
+		$AnimationPlayer.stop();
 		$AnimationPlayer.playback_speed = 1 / duration;
-		$AnimationPlayer.queue('close');
+		$AnimationPlayer.play('close');
 		self._closed = true;
 		self._open = false;
 
@@ -45,6 +46,7 @@ func open(duration: float):
 		var animation = $AnimationPlayer.get_animation('open');
 		var track_scale = animation.find_track('.:scale');
 		animation.track_set_key_value(track_scale, 0, self.scale);
-		$AnimationPlayer.queue('open');
+		$AnimationPlayer.stop();
+		$AnimationPlayer.play('open');
 		self._open = true;
 		self._closed = false;
