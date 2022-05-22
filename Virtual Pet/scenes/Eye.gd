@@ -42,11 +42,15 @@ func close(duration: float):
 
 func open(duration: float):
 	if not self._open:
-		$AnimationPlayer.playback_speed = 1 / duration;
-		var animation = $AnimationPlayer.get_animation('open');
-		var track_scale = animation.find_track('.:scale');
-		animation.track_set_key_value(track_scale, 0, self.scale);
-		$AnimationPlayer.stop();
-		$AnimationPlayer.play('open');
-		self._open = true;
-		self._closed = false;
+		self._open(duration);
+
+
+func _open(duration: float):
+	$AnimationPlayer.playback_speed = 1 / duration;
+	var animation = $AnimationPlayer.get_animation('open');
+	var track_scale = animation.find_track('.:scale');
+	animation.track_set_key_value(track_scale, 0, self.scale);
+	$AnimationPlayer.stop();
+	$AnimationPlayer.play('open');
+	self._open = true;
+	self._closed = false;
