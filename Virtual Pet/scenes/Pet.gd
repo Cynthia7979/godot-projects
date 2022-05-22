@@ -17,7 +17,6 @@ func _ready():
 	$BlinkTimer.wait_time = rand_range(0, 3.0);
 	$BlinkTimer.start();
 	last_mouse_position = get_viewport().get_mouse_position();
-	print('Hey. Don\'t worry. I\'m here.')
 
 
 func _process(delta):
@@ -41,11 +40,6 @@ func _process(delta):
 		$EyeAnimationPlayer.queue("get_pet");
 		
 	last_mouse_position = new_mouse_position;
-	
-#	if Input.is_action_just_released("left_click"):
-#		get_tree().call_group('eye', 'blink', 0.5);
-#		$BlinkTimer.stop();
-#		$BlinkTimer.start();
 	
 
 func _input(event):
