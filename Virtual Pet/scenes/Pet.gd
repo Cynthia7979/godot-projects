@@ -42,10 +42,10 @@ func _process(delta):
 		
 	last_mouse_position = new_mouse_position;
 	
-	if Input.is_action_just_released("left_click"):
-		get_tree().call_group('eye', 'blink', 0.5);
-		$BlinkTimer.stop();
-		$BlinkTimer.start();
+#	if Input.is_action_just_released("left_click"):
+#		get_tree().call_group('eye', 'blink', 0.5);
+#		$BlinkTimer.stop();
+#		$BlinkTimer.start();
 	
 
 func _input(event):
