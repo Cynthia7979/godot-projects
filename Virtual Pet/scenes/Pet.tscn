@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://assets/body.png" type="Texture" id=1]
 [ext_resource path="res://scenes/Eye.tscn" type="PackedScene" id=2]
@@ -60,11 +60,6 @@ shader_param/mouse_position = Vector2( 0, 0 )
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 248, 247 )
 
-[sub_resource type="Curve2D" id=2]
-_data = {
-"points": PoolVector2Array( 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 121, -1 )
-}
-
 [sub_resource type="Animation" id=5]
 length = 0.001
 tracks/0/type = "bezier"
@@ -118,7 +113,6 @@ tracks/0/keys = {
 [sub_resource type="Animation" id=8]
 resource_name = "get_pet"
 length = 4.0
-loop = true
 step = 0.05
 tracks/0/type = "value"
 tracks/0/path = NodePath("Eyes:position")
@@ -205,22 +199,16 @@ position = Vector2( -88, -30 )
 position = Vector2( 91, -33 )
 rotation = 3.14159
 
-[node name="EyeMovementPath" type="Path2D" parent="."]
-rotation = 0.577704
-curve = SubResource( 2 )
-
-[node name="PathFollow2D" type="PathFollow2D" parent="EyeMovementPath"]
-position = Vector2( 27.8401, -1 )
-offset = 27.85
-rotate = false
-loop = false
-
 [node name="BlinkTimer" type="Timer" parent="."]
 wait_time = 4.0
 one_shot = true
 
 [node name="StopGettingPetTimer" type="Timer" parent="."]
 wait_time = 0.8
+one_shot = true
+
+[node name="GetPetTimer" type="Timer" parent="."]
+wait_time = 0.7
 one_shot = true
 
 [node name="EyeAnimationPlayer" type="AnimationPlayer" parent="."]
@@ -233,6 +221,6 @@ anims/getting_pet_manual = SubResource( 7 )
 
 [connection signal="mouse_entered" from="." to="." method="_on_Pet_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_Pet_mouse_exited"]
-[connection signal="item_rect_changed" from="EyeMovementPath" to="EyeMovementPath/PathFollow2D" method="_on_EyeMovementPath_item_rect_changed"]
 [connection signal="timeout" from="BlinkTimer" to="." method="_on_BlinkTimer_timeout"]
 [connection signal="timeout" from="StopGettingPetTimer" to="." method="stop_getting_pet"]
+[connection signal="timeout" from="GetPetTimer" to="." method="_on_GetPetTimer_timeout"]

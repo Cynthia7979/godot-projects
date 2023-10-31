@@ -28,7 +28,7 @@ func _process(delta):
 		mouse_speed_sequence.size()-90, 
 		mouse_speed_sequence.size()
 	)
-	if avg(sequence_of_interest) <= 1:  # No large motions
+	if avg(sequence_of_interest) <= 1:  # No large motions, enter idle mode
 		if not self.in_idle_mode:
 			self.idle_mode(0.3);
 			self.in_idle_mode = true;
@@ -37,6 +37,8 @@ func _process(delta):
 		self.in_idle_mode = false;
 
 	if self.getting_pet and $EyeAnimationPlayer.get_queue().size() < 2:
+		# Because one animation is only one cycle
+		# We need to set it on replay
 		$EyeAnimationPlayer.queue("get_pet");
 		
 	last_mouse_position = new_mouse_position;
@@ -93,7 +95,7 @@ func clamp_displacement_length(r):
 				)
 			) / (PI / 2) + maximum_displacement_length / 2
 		)
-	)
+	);
 
 
 func _on_BlinkTimer_timeout():
@@ -113,19 +115,23 @@ func idle_mode(animation_length: float):
 	# Adjust speed of AnimationPlayer to preferred length (seconds)
 	# Originall animation duration is 1s
 	$EyeAnimationPlayer.set_speed_scale(1 / animation_length);
-	reset_eye_return_animation_position();
-	# Play the animtaion
-	$EyeAnimationPlayer.play("eye_return");
+	self.eye_return();
 
 
 func reset_eye_return_animation_position():
 	# Adjust initial position values to current ones
+	# Call this function before starting the eye_return animation
 	var animation = $EyeAnimationPlayer.get_animation('eye_return');
 	var track_position = animation.find_track('Eyes:position');
 	animation.track_set_key_value(track_position, 0, $Eyes.position);
 	animation.track_set_key_value(track_position, 1, $Eyes.position * 0.8)
 	animation.track_set_key_value(track_position, 2, $Eyes.position * 0.1);
 
+
+func eye_return():
+	reset_eye_return_animation_position();
+	$EyeAnimationPlayer.play("eye_return");
+	
 
 func get_pet():
 	$StopGettingPetTimer.stop();
@@ -138,19 +144,23 @@ func get_pet():
 
 func stop_getting_pet():
 	$EyeAnimationPlayer.stop();
-	reset_eye_return_animation_position();
-	$EyeAnimationPlayer.play("eye_return");
+	self.eye_return();
 	get_tree().call_group('eye', 'open', 0.3);
 	$BlinkTimer.start();
 	self.getting_pet = false;
 
 
 func _on_Pet_mouse_entered():
-	print('ENTER')
-	self.get_pet();
+	$GetPetTimer.start();
+
+
+func _on_GetPetTimer_timeout():
+	if not self.in_idle_mode:
+		self.get_pet();
 
 
 func _on_Pet_mouse_exited():
+	$GetPetTimer.stop();
 	if self.getting_pet:
 		$StopGettingPetTimer.start();
 
